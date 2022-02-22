@@ -1,9 +1,7 @@
 import {State} from "./state";
 import {filter, merge, Observable} from "rxjs";
 
-export type StoreState = {[key: string]: State<any>};
-
-export class Rack<T extends StoreState> extends State<StoreState> {
+export class Rack<T> extends State<T> {
 
     constructor(
         private state: T
@@ -11,7 +9,7 @@ export class Rack<T extends StoreState> extends State<StoreState> {
         super();
     }
 
-    onCreate(): StoreState {
+    onCreate(): T {
         return this.state;
     }
 

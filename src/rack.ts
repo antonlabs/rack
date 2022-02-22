@@ -6,8 +6,7 @@ type StoreState = {[key: string]: State<any>};
 export class Rack extends State<StoreState> {
 
     constructor(
-        private state: StoreState,
-        locaStorageKey: string
+        private state: StoreState
     ) {
         super();
     }

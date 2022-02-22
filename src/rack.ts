@@ -1,7 +1,7 @@
 import {State} from "./state";
 import {filter, merge, Observable} from "rxjs";
 
-type StoreState = {[key: string]: State<any>};
+export type StoreState = {[key: string]: State<any>};
 
 export class Rack extends State<StoreState> {
 

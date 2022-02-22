@@ -18,14 +18,17 @@ export class Rack<T> extends State<T> {
     }
 
     get obs(): Observable<any> {
-        return merge(Object.keys(this.state).map(key => this.state[key].obs)).pipe(
+        const state = this.state as unknown as {[key: string]: State<any>};
+        return merge(Object.keys(state).map(key => state[key].obs)).pipe(
             filter((val) => val !== undefined)
         ) as Observable<any>;
     }
 
     async refreshState(): Promise<void> {
-        for(const key of Object.keys(this.state)) {
-            this.state[key].refreshState();
+        const state = this.state as unknown as {[key: string]: State<any>};
+        for(const key of Object.keys(state)) {
+            state[key].refreshState();
         }
     }
 }
+

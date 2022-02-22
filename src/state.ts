@@ -7,7 +7,7 @@ export abstract class State<T> {
     this.fromLocalStorage()
   );
 
-  protected constructor(
+  constructor(
       private persistenceKey?: string,
       private persistenceAdapter: PersistenceAdapter<any> = new LocalStorageAdapter()
   ) {}

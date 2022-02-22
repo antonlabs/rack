@@ -1,6 +1,6 @@
 {
   "name": "@antonlabs/rack",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Rack it's a simple and pluggable state manager based on reactive concepts",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",

@@ -3,15 +3,19 @@ import {filter, merge, Observable} from "rxjs";
 
 export type StoreState = {[key: string]: State<any>};
 
-export class Rack extends State<StoreState> {
+export class Rack<T extends StoreState> extends State<StoreState> {
 
     constructor(
-        private state: StoreState
+        private state: T
     ) {
         super();
     }
 
     onCreate(): StoreState {
+        return this.state;
+    }
+
+    get states(): T {
         return this.state;
     }
 

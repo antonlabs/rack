@@ -1,5 +1,5 @@
 import {BehaviorSubject, filter, Observable} from "rxjs";
-import {PersistenceAdapter} from "./persistence-adapter";
+import {AsyncPersistenceAdapter, PersistenceAdapter} from "./persistence-adapter";
 import {LocalStorageAdapter} from "./std-adapter/local-storage-adapter";
 
 export abstract class State<T> {
@@ -9,7 +9,7 @@ export abstract class State<T> {
 
   constructor(
       private persistenceKey?: string,
-      private persistenceAdapter: PersistenceAdapter<any> = new LocalStorageAdapter()
+      private persistenceAdapter: PersistenceAdapter<any> | AsyncPersistenceAdapter<any> = new LocalStorageAdapter()
   ) {}
 
   fromLocalStorage(): T {

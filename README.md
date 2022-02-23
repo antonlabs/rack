@@ -1,7 +1,7 @@
 # Rack
 Rack it's a simple and pluggable state manager based on reactive concepts
 
-#Key concepts
+# Key concepts
 The key concepts that Rack implements are:
 - History managements of your application's global states
 - States are observable by default

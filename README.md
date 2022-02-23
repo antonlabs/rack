@@ -10,6 +10,10 @@ The key concepts that Rack implements are:
 
 # Getting started
 
+```
+npm install @antonlabs/rack
+```
+
 ## Create your state's model
 ```typescript 
 import {State} from "@antonlabs/rack";

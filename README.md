@@ -77,7 +77,7 @@ Install the adapter package, for example this is the module to use MacOS's keych
 You can changing it during instance declaration like the example
 ```typescript
 const rack = new Rack({
-    globalConfig: new WalletState(
+    myWallet: new WalletState(
         'wallet', 
         new KeyChainAdapter('anton.finance') //the argument is the domain of our secrets
     )

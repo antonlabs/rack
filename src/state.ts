@@ -15,7 +15,9 @@ export abstract class State<T> {
   fromLocalStorage(): T {
     if(this.persistenceKey) {
       const content = this.persistenceAdapter.getItem(this.persistenceKey);
-      if(content) {
+      if(content instanceof Promise) {
+        content.then(data => this.sub.next(data));
+      }else if(content) {
         return JSON.parse(content);
       }
     }
@@ -26,9 +28,9 @@ export abstract class State<T> {
     return this.sub.pipe(filter((val) => val !== undefined)) as Observable<T>;
   }
 
-  store(): void {
+  async store(): Promise<void> {
     if(this.persistenceKey) {
-      this.persistenceAdapter.setItem(this.persistenceKey, JSON.stringify(this.sub.value));
+      await this.persistenceAdapter.setItem(this.persistenceKey, JSON.stringify(this.sub.value));
     }else {
       throw new Error('You have to set persistence key in state constructor to store a state');
     }

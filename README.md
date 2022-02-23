@@ -39,7 +39,7 @@ export class WalletState extends State<WalletProperties> {
 
 ```
 
-#Add to your Rack!
+## Add to your Rack!
 
 ```typescript 
 export const appRack = new Rack({
@@ -47,7 +47,7 @@ export const appRack = new Rack({
 });
 ```
 
-#Make your app reactive
+## Make your app reactive
 ```typescript
 rack.states.myWallet.obs.subscribe(
     (wallet) => {
@@ -56,7 +56,7 @@ rack.states.myWallet.obs.subscribe(
 );
 ```
 
-#Edit your state from everywhere
+## Edit your state from everywhere
 This will auto propagate your changes to all listeners
 ```typescript
 rack.states.myWallet.set({
@@ -64,12 +64,12 @@ rack.states.myWallet.set({
 });
 ```
 
-#Store your state when you want
+## Store your state when you want
 ```typescript
 rack.states.myWallet.store()
 ```
 
-#Change your state's persistent layer with modular Rack's Adapter
+## Change your state's persistent layer with modular Rack's Adapter
 Install the adapter package, for example this is the module to use MacOS's keychain
 
 ```npm install @antonlabs/rack-keychain-adapter```

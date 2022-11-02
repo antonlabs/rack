@@ -1,12 +1,26 @@
 import {State} from "./state";
 import {filter, merge, Observable} from "rxjs";
+import { AsyncPersistenceAdapter, PersistenceAdapter } from "./persistence-adapter";
+import { LocalStorageAdapter } from "./std-adapter/local-storage-adapter";
 
 export class Rack<T> extends State<T> {
 
     constructor(
-        private state: T
+        private state: T,
     ) {
         super();
+        super.persistenceAdapter.setItem('rack.lock', JSON.stringify(this.getMetadata(state as any)));
+    }
+
+    getMetadata(input: any): {[key: string]: string} {
+        let result: {[key: string]: string} = {};
+        for(const key of Object.keys(input)) {
+            if(input[key] instanceof State) {
+                result[key] = input[key].constructor.name;
+                result = {...result, ...this.getMetadata(result[key])};
+            }
+        }
+        return result;
     }
 
     onCreate(): T {

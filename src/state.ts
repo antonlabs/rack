@@ -9,7 +9,7 @@ export abstract class State<T> {
 
   constructor(
       private persistenceKey?: string,
-      private persistenceAdapter: PersistenceAdapter<any> | AsyncPersistenceAdapter<any> = new LocalStorageAdapter()
+      protected persistenceAdapter: PersistenceAdapter<any> | AsyncPersistenceAdapter<any> = new LocalStorageAdapter()
   ) {}
 
   fromLocalStorage(): T {

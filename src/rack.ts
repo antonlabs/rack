@@ -11,6 +11,7 @@ export class Rack<T> extends State<T> {
     }
 
     getMetadata(input: any): {[key: string]: string} {
+        console.log("get metadata");
         let result: {[key: string]: string} = {};
         for(const key of Object.keys(input)) {
             if(input[key] instanceof State) {

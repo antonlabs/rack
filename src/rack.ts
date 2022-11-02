@@ -1,22 +1,23 @@
 import {State} from "./state";
 import {filter, merge, Observable} from "rxjs";
 
+
 export class Rack<T> extends State<T> {
+    private metadata: {[key: string]: Function} = {};
 
     constructor(
         private state: T,
     ) {
         super();
-        this.persistenceAdapter.setItem('rack.lock', JSON.stringify(this.getMetadata(state as any)));
+        this.metadata = this.getMetadata(state);
+        console.log('metadata', this.metadata);
     }
 
-    getMetadata(input: any): {[key: string]: string} {
-        console.log('get meta 2');
-        let result: {[key: string]: string} = {};
+    getMetadata(input: any): {[key: string]: Function} {
+        let result: {[key: string]: Function} = {};
         for(const key of Object.keys(input)) {
             if(input[key] instanceof State) {
-                result[key] = input[key].constructor.name;
-                console.log(key, input[key]);
+                result[key] = input[key].constructor;
                 result = {...result, ...this.getMetadata(input[key].val)};
             }
         }

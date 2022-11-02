@@ -17,7 +17,7 @@ export class Rack<T> extends State<T> {
             if(input[key] instanceof State) {
                 result[key] = input[key].constructor.name;
                 console.log(key, input[key]);
-                result = {...result, ...this.getMetadata(input[key])};
+                result = {...result, ...this.getMetadata(input[key].val)};
             }
         }
         return result;

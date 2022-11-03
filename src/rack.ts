@@ -1,24 +1,28 @@
 import {State} from "./state";
 import {filter, merge, Observable} from "rxjs";
+import { AsyncPersistenceAdapter, PersistenceAdapter } from "./persistence-adapter";
+import { LocalStorageAdapter } from "./std-adapter/local-storage-adapter";
 
 
 export class Rack<T> extends State<T> {
-    private metadata: {[key: string]: Function} = {};
+    static metadata: {[key: string]: Function} = {};
 
     constructor(
         private state: T,
+        protected persistenceAdapter: PersistenceAdapter<any> | AsyncPersistenceAdapter<any> = new LocalStorageAdapter()
     ) {
-        super();
-        this.metadata = this.getMetadata(state);
-        console.log('metadata', this.metadata);
+        super(undefined, persistenceAdapter);
+        Rack.metadata = this.getMetadata(state);
     }
 
-    getMetadata(input: any): {[key: string]: Function} {
+    getMetadata(input: any, prefix?: string): {[key: string]: Function} {
         let result: {[key: string]: Function} = {};
         for(const key of Object.keys(input)) {
-            if(input[key] instanceof State) {
-                result[key] = input[key].constructor;
-                result = {...result, ...this.getMetadata(input[key].val)};
+            if(input[key] instanceof State && input[key].persistenceKey !== undefined) {
+                const persistenceKey = input[key].persistenceKey
+                result[persistenceKey] = input[key].constructor;
+                input[key].persistenceKey = persistenceKey;
+                result = {...result, ...this.getMetadata(input[key].val, persistenceKey)};
             }
         }
         return result;

@@ -30,10 +30,26 @@ export abstract class State<T> {
 
   async store(): Promise<void> {
     if(this.persistenceKey) {
-      await this.persistenceAdapter.setItem(this.persistenceKey, JSON.stringify(this.sub.value));
+      for(const value of Object.values(this.val as any)) {
+        if(value instanceof State) {
+          await value.store();
+        }
+      }
+      await this.persistenceAdapter.setItem(this.persistenceKey, this.toJsonString());
     }else {
       throw new Error('You have to set persistence key in state constructor to store a state');
     }
+  }
+
+  toJsonString(): string {
+    const value: any = this.sub.value;
+    const objectWithoutNestedStates: any = {};
+    for(const key of Object.keys(value)) {
+      if(!(value[key] instanceof State)) {
+        objectWithoutNestedStates[key] = value[key];
+      }
+    }
+    return JSON.stringify(objectWithoutNestedStates);
   }
 
   get val(): T {

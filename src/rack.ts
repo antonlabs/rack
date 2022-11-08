@@ -5,7 +5,7 @@ import { LocalStorageAdapter } from "./std-adapter/local-storage-adapter";
 
 
 export class Rack<T> extends State<T> {
-    static metadata: {[key: string]: Function} = {};
+    static metadata: {[key: string]: () => State<any>} = {};
 
     constructor(
         private state: T,
@@ -15,12 +15,13 @@ export class Rack<T> extends State<T> {
         Rack.metadata = this.getMetadata(state);
     }
 
-    getMetadata(input: any, prefix?: string): {[key: string]: Function} {
-        let result: {[key: string]: Function} = {};
+    getMetadata(input: any, prefix?: string): {[key: string]: () => State<any>} {
+        let result: {[key: string]: () => State<any>} = {};
         for(const key of Object.keys(input)) {
             if(input[key] instanceof State && input[key].persistenceKey !== undefined) {
                 const persistenceKey = input[key].persistenceKey
-                result[persistenceKey] = input[key].constructor;
+                const persistenceAdapter = input[key].persistenceAdapter;
+                result[persistenceKey] = () => new input[key].constructor(persistenceKey, persistenceAdapter);
                 input[key].persistenceKey = persistenceKey;
                 result = {...result, ...this.getMetadata(input[key].val, persistenceKey)};
             }

@@ -68,4 +68,12 @@ test('test init of a rack state', () => {
     const rack = new Rack({
         prova: new StateA('state-a', new MyTestPersistenceProvider())
     }, new MyTestPersistenceProvider());
+    rack.val.prova.val.stateB.set({
+        name: 'state-corrupted'
+    })
+    console.log(rack.val.prova.val.stateB.val);
+    const rack2 = new Rack({
+        prova: new StateA('state-a', new MyTestPersistenceProvider())
+    }, new MyTestPersistenceProvider());
+    console.log(rack2.val.prova.val.stateB.val);
 })

@@ -1,6 +1,7 @@
 import {BehaviorSubject, filter, Observable} from "rxjs";
 import {AsyncPersistenceAdapter, PersistenceAdapter} from "./persistence-adapter";
 import {LocalStorageAdapter} from "./std-adapter/local-storage-adapter";
+import {Rack} from "./rack";
 
 export abstract class State<T> {
   protected sub: BehaviorSubject<T> = new BehaviorSubject<T>(
@@ -15,13 +16,32 @@ export abstract class State<T> {
   fromLocalStorage(): T {
     if(this.persistenceKey) {
       const content = this.persistenceAdapter.getItem(this.persistenceKey);
+
       if(content instanceof Promise) {
-        content.then(data => this.sub.next(data));
+        content.then(data => this.sub.next(this.loadContentFromCache(JSON.parse(data))));
       }else if(content) {
-        return JSON.parse(content);
+        return this.loadContentFromCache(JSON.parse(content));
       }
     }
     return this.onCreate();
+  }
+
+  loadContentFromCache(content: any): any {
+    const result: any = {};
+    Object.keys(content).forEach((key: any) => {
+      console.log('content', content[key]);
+      if(content[key].startsWith("#")) {
+        const stripPersistenceKey = content[key].slice(1);
+        const instance = Rack.metadata[stripPersistenceKey]();
+        if(instance) {
+          instance.set(content[key]);
+          result[key] = instance;
+        }
+      }else {
+        result[key] = content[key];
+      }
+    })
+    return result;
   }
 
   get obs(): Observable<T> {
@@ -45,7 +65,9 @@ export abstract class State<T> {
     const value: any = this.sub.value;
     const objectWithoutNestedStates: any = {};
     for(const key of Object.keys(value)) {
-      if(!(value[key] instanceof State)) {
+      if(value[key] instanceof State) {
+        objectWithoutNestedStates[key] = `#${value[key].persistenceKey}`;
+      }else {
         objectWithoutNestedStates[key] = value[key];
       }
     }
@@ -57,7 +79,7 @@ export abstract class State<T> {
   }
 
   set(value: Partial<T> | any) {
-    const actualValue = JSON.parse(JSON.stringify(this.sub.value ?? {}));
+    const actualValue = JSON.parse(this.toJsonString() ?? {});
     this.sub.next({...actualValue, ...value});
   }
 

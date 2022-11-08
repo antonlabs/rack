@@ -71,9 +71,9 @@ test('test init of a rack state', () => {
     rack.val.prova.val.stateB.set({
         name: 'state-corrupted'
     })
-    console.log(rack.val.prova.val.stateB.val);
+    rack.val.prova.store();
     const rack2 = new Rack({
         prova: new StateA('state-a', new MyTestPersistenceProvider())
     }, new MyTestPersistenceProvider());
-    console.log(rack2.val.prova.val.stateB.val);
+    expect(rack2.val.prova.val.stateB.val.name).toBe('state-corrupted');
 })

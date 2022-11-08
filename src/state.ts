@@ -16,7 +16,7 @@ export abstract class State<T> {
   fromLocalStorage(): T {
     if(this.persistenceKey) {
       const content = this.persistenceAdapter.getItem(this.persistenceKey);
-
+      //console.log("fromLocalStorage", this.persistenceKey, content);
       if(content instanceof Promise) {
         content.then(data => this.sub.next(this.loadContentFromCache(JSON.parse(data))));
       }else if(content) {
